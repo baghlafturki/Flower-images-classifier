@@ -132,5 +132,12 @@ class Network(nn.Module):
         self.layers.extend([nn.Linear(l1, l2) for l1, l2 in layer_sizes])
         self.output = nn.Linear(hidden_layers[-1], out_size)
         self.dropout = nn.Dropout(p=drop)
+
+    def forward(self, x):
+        for layer in self.layers:
+            x = F.relu(layer(x))
+            x = self.dropout(x)
+        x = self.output(x)
+        return F.log_softmax(x, dim=1)
         
 
